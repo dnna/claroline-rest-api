@@ -17,37 +17,41 @@ class Application_Model_User extends Dnna_Model_Object {
      */
     protected $_username;
     /**
-     * @FormFieldLabel Ονοματεπώνυμο
+     * @Column (name="prenom", type="string")
+     * @FormFieldLabel Όνομα
      * @FormFieldDisabled true
      */
-    protected $_realname;
+    protected $_firstname;
+    /**
+     * @Column (name="nom", type="string")
+     * @FormFieldLabel Επώνυμο
+     * @FormFieldDisabled true
+     */
+    protected $_lastname;
+    /**
+     * @Column (name="email", type="string")
+     * @FormFieldLabel E-mail
+     * @FormFieldDisabled true
+     */
+    protected $_email;
+    /**
+     * @ManyToOne (targetEntity="Application_Model_Department", inversedBy="_users")
+     * @JoinColumn (name="department", referencedColumnName="id")
+     * @FormFieldLabel Τμήμα
+     * @FormFieldType Recursive
+     * @var Application_Model_Department
+     */
+    protected $_department;
     /**
      * @ManyToMany (targetEntity="Application_Model_Course", mappedBy="_users")
+     * @FormFieldLabel Μαθήματα
+     * @FormFieldType Recursive
      */
     protected $_courses;
     /**
      * @ManyToMany (targetEntity="Application_Model_Group", mappedBy="_users")
      */
     protected $_groups;
-
-    public function hasRole($rolename) {
-        foreach($this->_roles as $curRole) {
-            if($curRole->get_rolename() === $rolename) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public function getDominantRole() {
-        if($this->hasRole('elke')) {
-            return 'elke';
-        } else if($this->hasRole('professor')) {
-            return 'professor';
-        } else {
-            throw new Exception('Σφάλμα στην ανάκτηση του κυρίαρχου ρόλου του χρήστη');
-        }
-    }
 
     public function get_userid() {
         return $this->_userid;
@@ -65,22 +69,36 @@ class Application_Model_User extends Dnna_Model_Object {
         $this->_username = $_username;
     }
 
-    public function get_realname() {
-        return $this->_realname;
-    }
-    
-    public function get_realnameLowercase() {
-        $str = mb_convert_case($this->get_realname(), MB_CASE_TITLE, "UTF-8").' ';
-        $str = preg_replace('/σ\s/i', 'ς ', $str);
-        return trim($str);
+    public function get_firstname() {
+        return $this->_firstname;
     }
 
-    public function get_realnameCondensed() {
-        return str_replace(" ", "", $this->get_realname());
+    public function set_firstname($_firstname) {
+        $this->_firstname = $_firstname;
     }
 
-    public function set_realname($_realname) {
-        $this->_realname = $_realname;
+    public function get_lastname() {
+        return $this->_lastname;
+    }
+
+    public function set_lastname($_lastname) {
+        $this->_lastname = $_lastname;
+    }
+
+    public function get_email() {
+        return $this->_email;
+    }
+
+    public function set_email($_email) {
+        $this->_email = $_email;
+    }
+
+    public function get_department() {
+        return $this->_department;
+    }
+
+    public function set_department($_department) {
+        $this->_department = $_department;
     }
 
     public function get_courses() {
@@ -100,7 +118,7 @@ class Application_Model_User extends Dnna_Model_Object {
     }
 
     public function __toString() {
-        return $this->get_realname();
+        return $this->get_firstname().' '.$this->get_lastname();
     }
 }
 ?>

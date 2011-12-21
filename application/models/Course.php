@@ -12,6 +12,7 @@ class Application_Model_Course extends Dnna_Model_Object {
     */
     protected $_id;
     /**
+     * @Id
      * @Column (name="code", type="string")
      * @FormFieldLabel Κωδικός Μαθήματος
      * @FormFieldDisabled true
@@ -30,6 +31,12 @@ class Application_Model_Course extends Dnna_Model_Object {
      */
     protected $_description;
     /**
+     * @ManyToOne (targetEntity="Application_Model_Department", inversedBy="_courses")
+     * @JoinColumn (name="faculteid", referencedColumnName="id")
+     * @var Application_Model_Department
+     */
+    protected $_department;
+    /**
      * @ManyToMany (targetEntity="Application_Model_User", inversedBy="_courses")
      * @JoinTable (name="cours_user",
      *      joinColumns={@JoinColumn(name="cours_id", referencedColumnName="cours_id")},
@@ -39,6 +46,8 @@ class Application_Model_Course extends Dnna_Model_Object {
     protected $_users;
     /**
      * @OneToMany (targetEntity="Application_Model_Group", mappedBy="_course")
+     * @FormFieldLabel Όμαδες χρηστών όπου έχει εγγραφεί ο χρήστης
+     * @FormFieldType Recursive
      * @var Application_Model_Group
      */
     protected $_groups;
@@ -75,6 +84,14 @@ class Application_Model_Course extends Dnna_Model_Object {
         $this->_description = $_description;
     }
 
+    public function get_department() {
+        return $this->_department;
+    }
+
+    public function set_department($_department) {
+        $this->_department = $_department;
+    }
+
     public function get_users() {
         return $this->_users;
     }
@@ -84,7 +101,20 @@ class Application_Model_Course extends Dnna_Model_Object {
     }
 
     public function get_groups() {
-        return $this->_groups;
+        if(Zend_Registry::isRegistered('personalized')) {
+            $user = Zend_Registry::get('user');
+            return $this->_groups->filter(
+                        function($entry) use ($user) {
+                           if ($user->get_groups()->contains($entry)) {
+                               return true;
+                           }
+
+                           return false;
+                        }
+                    );
+        } else {
+            return $this->_groups;
+        }
     }
 
     public function set_groups($_groups) {

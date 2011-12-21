@@ -17,6 +17,7 @@ class Application_Plugin_AclPlugin extends Zend_Controller_Plugin_Abstract
             return;
         } else {
             $user = Zend_Registry::get('entityManager')->getRepository('Application_Model_User')->authenticate($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
+            //$user = Zend_Registry::get('entityManager')->getRepository('Application_Model_User')->findOneBy(array('_username' => $_SERVER['PHP_AUTH_USER']));
             Zend_Registry::set('user', $user);
         }
         if(Zend_Registry::get('user') == false) {

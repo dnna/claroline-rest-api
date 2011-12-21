@@ -15,15 +15,17 @@ class Api_CoursesController extends Api_IndexController
             $limit = $this->getRequest()->getParam('s');
         }
 
-        $courses = Zend_Registry::get('user')->get_courses();
+        $courses = Zend_Registry::get('entityManager')->getRepository('Application_Model_Course')->findAll();
         $this->_helper->Index($this, $courses, 'courses', array('code' => 'get_code'));
     }
 
     public function getAction() {
-        $this->_helper->viewRenderer->setNoRender(TRUE);
         $object = Zend_Registry::get('entityManager')->getRepository('Application_Model_Course')->findOneBy(array('_code' => $this->_request->getParam('id')));
         if(!isset($object)) {
             throw new Exception('CourseNotFound', 404);
+        }
+        if(!$object->get_users()->contains(Zend_Registry::get('user'))) {
+            throw new Exception('NotEnrolledInCourse', 401);
         }
         $this->_helper->Get($this, $object, new Dnna_Form_AutoForm('Application_Model_Course', $this->view), 'course');
     }
