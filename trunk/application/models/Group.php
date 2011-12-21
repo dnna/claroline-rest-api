@@ -15,7 +15,7 @@ class Application_Model_Group extends Dnna_Model_Object {
      * @ManyToOne (targetEntity="Application_Model_Course", inversedBy="_groups")
      * @JoinColumn (name="course_id", referencedColumnName="cours_id")
      * @FormFieldLabel Μάθημα
-     * @FormFieldDisabled true
+     * @FormFieldType RecursiveId
      * @var Application_Model_Course
      */
     protected $_course;
@@ -51,6 +51,11 @@ class Application_Model_Group extends Dnna_Model_Object {
      *      )
      */
     protected $_users;
+    /**
+     * @FormFieldLabel Ο σπουδαστής είναι εγγεγραμμένος
+     * @FormFieldDisabled true
+    */
+    protected $_registered;
 
     public function get_id() {
         return $this->_id;
@@ -106,6 +111,13 @@ class Application_Model_Group extends Dnna_Model_Object {
 
     public function set_users($_users) {
         $this->_users = $_users;
+    }
+
+    public function get_registered() {
+        if($this->get_users()->contains(Zend_Registry::get('user'))) {
+            $this->_registered = 'true';
+        }
+        return $this->_registered;
     }
 
     public function __toString() {

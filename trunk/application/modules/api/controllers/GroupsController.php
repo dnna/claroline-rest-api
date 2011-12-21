@@ -15,8 +15,15 @@ class Api_GroupsController extends Api_IndexController
             $limit = $this->getRequest()->getParam('s');
         }
 
-        $groups = Zend_Registry::get('user')->get_groups();
-        //$groups = Zend_Registry::get('entityManager')->getRepository('Application_Model_Group')->findAll();
+        $courseCode = $this->_request->getUserParam('course');
+        if($courseCode == null) {
+            throw new Exception('CourseParameterRequired', 404);
+        }
+        $course = Zend_Registry::get('entityManager')->getRepository('Application_Model_Course')->findOneBy(array('_code' => $courseCode));
+        if($course == null) {
+            throw new Exception('CourseNotFound', 404);
+        }
+        $groups = $course->get_groups();
         $this->_helper->Index($this, $groups, 'groups', array('id' => 'get_id'));
     }
 
@@ -25,6 +32,9 @@ class Api_GroupsController extends Api_IndexController
         $object = Zend_Registry::get('entityManager')->getRepository('Application_Model_Group')->find($this->_request->getParam('id'));
         if(!isset($object)) {
             throw new Exception('GroupNotFound', 404);
+        }
+        if(!$object->get_users()->contains(Zend_Registry::get('user'))) {
+            throw new Exception('NotGroupMember', 401);
         }
         $this->_helper->Get($this, $object, new Dnna_Form_AutoForm('Application_Model_Group', $this->view), 'group');
     }

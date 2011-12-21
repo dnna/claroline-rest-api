@@ -33,7 +33,7 @@ class Application_Model_Repositories_Users extends Application_Model_Repositorie
             return $dbUser;
         } else {
             // Search LDAP
-            $ldap=$this->getLdapConn();
+            /*$ldap=$this->getLdapConn();
 			$attributes = array('uid', 'cn;lang-el', 'mail');
 			$search = @ldap_search($ldap->getResource(), 'ou=people,dc=teiath,dc=gr', '(&(objectClass=posixAccount)(uid=*'.$this->ldapspecialchars($username).'*))');
 			$userArray = ldap_get_entries($ldap->getResource(), $search);
@@ -41,7 +41,8 @@ class Application_Model_Repositories_Users extends Application_Model_Repositorie
 				return $this->createUserFromLDAPEntry($userArray[0]);
 			} else {
 				return null;
-			}
+			}*/
+            throw new Exception('UserRetrievalError', '500');
         }
     }
 
