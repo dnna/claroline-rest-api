@@ -1,0 +1,22 @@
+<?php
+$synedriaseis = array();
+$i = 0;
+foreach($this->synedriaseis as $curSynedriasi) {
+    if(isset($this->timestamps) && $this->timestamps == true) {
+        $synedriaseis[$i] = $curSynedriasi->toArray(false, true, array('timestamps' => true));
+    } else if(isset($this->iso8601) && $this->iso8601 == true) {
+        $synedriaseis[$i] = $curSynedriasi->toArray(false, true, array('iso8601' => true));
+    } else {
+        $synedriaseis[$i] = $curSynedriasi->toArray(false, true);
+    }
+    $synedriaseis[$i]['allDay'] = false;
+    $synedriaseis[$i]['url'] = htmlspecialchars($this->serverUrl().$this->url(array('id' => $curSynedriasi->get_id())));
+    $i++;
+}
+if(!isset($this->nowrap) || $this->nowrap != true) {
+    $temp = $synedriaseis;
+    $synedriaseis = array();
+    $synedriaseis['synedriaseis'] = $temp;
+}
+echo json_encode($synedriaseis);
+?>

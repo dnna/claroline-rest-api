@@ -1,0 +1,6 @@
+<?php
+$error = array();
+$error['code'] = $this->exception->getCode();
+$error['message'] = $this->exception->getMessage();
+echo json_encode($error);
+?>
