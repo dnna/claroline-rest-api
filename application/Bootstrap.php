@@ -10,22 +10,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
                 ));
     }
 
-    /**
-     * http://code.google.com/p/dnna-zend-lib/
-     */
-    protected function _initDnnaLib() {
-        $loader = new Zend_Application_Module_Autoloader(array(
-                    'basePath' => APPLICATION_PATH.'/../library/Dnna',
-                    'namespace' => 'Dnna',
-                ));
-        Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/../library/Dnna/controllers/helpers',
-                                                      'Dnna_Action_Helper');
-        Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/../library/Dnna/controllers/helpers/Rest',
-                                                      'Dnna_Action_Helper_Rest');
-        $this->bootstrap('view');
-        $this->getResource('view')->addHelperPath(APPLICATION_PATH.'/../library/Dnna/views/helpers', 'Dnna_View_Helper');
-    }
-
     protected function _initCache() {
         $frontendOptions = array(
             'lifetime' => 7200, // cache lifetime of 2 hours
@@ -88,6 +72,30 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
             $classLoader = new \Doctrine\Common\ClassLoader('DoctrineExtensions', APPLICATION_PATH . '/../library/');
             $classLoader->register();
         }
+    }
+
+    /**
+     * http://code.google.com/p/dnna-zend-lib/
+     */
+    protected function _initDnnaLib() {
+        $loader = new Zend_Application_Module_Autoloader(array(
+                    'basePath' => APPLICATION_PATH.'/../library/Dnna',
+                    'namespace' => 'Dnna',
+                ));
+        $loader->addResourceType('Controller', 'controllers/', 'Controller');
+        if(class_exists('Doctrine\ORM\EntityManager')) {
+            include_once(APPLICATION_PATH . '/../library/Dnna/plugins/PointType.php'); // Load the Point type
+            //Assuming the entity manager is in Zend_Registry as entityManager
+            $config = Zend_Registry::get('entityManager')->getConfiguration();
+            $config->addCustomNumericFunction('DISTANCE', 'Dnna\Doctrine\Types\Distance');
+            $config->addCustomNumericFunction('POINT_STR', 'Dnna\Doctrine\Types\PointStr');
+        }
+        Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/../library/Dnna/controllers/helpers',
+                                                      'Dnna_Action_Helper');
+        Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/../library/Dnna/controllers/helpers/Rest',
+                                                      'Dnna_Action_Helper_Rest');
+        $this->bootstrap('view');
+        $this->getResource('view')->addHelperPath(APPLICATION_PATH.'/../library/Dnna/views/helpers', 'Dnna_View_Helper');
     }
 
     protected function _initPaginator() {
