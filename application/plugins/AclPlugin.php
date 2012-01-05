@@ -5,7 +5,7 @@
 class Application_Plugin_AclPlugin extends Zend_Controller_Plugin_Abstract
 {
     public function preDispatch(Zend_Controller_Request_Abstract $request) {
-        if ('api' != $request->getModuleName()) {
+        if ('api' != $request->getModuleName() || strtolower($request->getControllerName()) === 'index') {
             // If not in this module, return early
             return;
         }
@@ -25,7 +25,7 @@ class Application_Plugin_AclPlugin extends Zend_Controller_Plugin_Abstract
             return;
         }
     }
-    
+
     protected function redirectToError($exception) {
         // Repoint the request to the default error handler
         $request = $this->getRequest();

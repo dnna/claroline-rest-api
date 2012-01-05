@@ -4,6 +4,8 @@
  */
 class Api_GroupsController extends Api_IndexController
 {
+    const name = 'Ομάδες Χρηστών (Εργαστηριακά Τμήματα - Ενδεικτική μορφή /api/groups/?course=ET100)';
+
     public function init() {
         parent::init();
         $this->_helper->viewRenderer->setNoRender(TRUE);
