@@ -4,6 +4,8 @@
  */
 class Api_ErrorController extends Api_IndexController
 {
+    const noindex = true;
+
     public function errorAction()
     {
         $errors = $this->_getParam('error_handler');

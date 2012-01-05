@@ -4,6 +4,8 @@
  */
 class Api_IndexController extends Zend_Rest_Controller
 {
+    const name = 'Ευρετήριο API';
+
     protected $_allowAnonymous = false;
     protected $_returnhtml = false;
 
@@ -32,12 +34,13 @@ class Api_IndexController extends Zend_Rest_Controller
         }
     }
 
-    public function preDispatch() {
-        // ACL
-    }
-
     public function indexAction() {
-        throw new Exception('Δεν υποστηρίζεται');
+        $this->_helper->viewRenderer->setNoRender(TRUE);
+        $apiindex = array();
+        foreach(Dnna_Model_ApiIndex::getApiIndex('api') as $curApiIndex) {
+            $apiindex[] = new Dnna_Model_ApiIndex($curApiIndex['id'], $curApiIndex['name']);
+        }
+        $this->_helper->Index($this, $apiindex, 'api', array('resource' => 'get_id'));
     }
 
     public function getAction() {
@@ -58,6 +61,10 @@ class Api_IndexController extends Zend_Rest_Controller
 
     public function schemaAction() {
         throw new Exception('Δεν έχει οριστεί schema για το συγκεκριμένο resource.');
+    }
+
+    public function get_returnhtml() {
+        return $this->_returnhtml;
     }
 
     protected function utf8_urldecode($str) {

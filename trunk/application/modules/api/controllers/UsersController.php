@@ -4,6 +4,7 @@
  */
 class Api_UsersController extends Api_IndexController
 {
+    const name = 'Χρήστες (Συνδεδεμένος χρήστης: /api/users/me)';
     public function init() {
         parent::init();
         $this->_helper->viewRenderer->setNoRender(TRUE);

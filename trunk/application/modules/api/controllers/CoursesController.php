@@ -4,6 +4,8 @@
  */
 class Api_CoursesController extends Api_IndexController
 {
+    const name = 'Μαθήματα';
+
     public function init() {
         parent::init();
         $this->_helper->viewRenderer->setNoRender(TRUE);
