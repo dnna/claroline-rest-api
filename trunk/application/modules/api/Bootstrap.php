@@ -5,7 +5,7 @@ class Api_Bootstrap extends Zend_Application_Module_Bootstrap
         $front = Zend_Controller_Front::getInstance();
         $router = $front->getRouter();
         // Specifying the "api" module only as RESTful:
-        $restRoute = new Api_Plugin_ApiRoute($front, array(), array(
+        $restRoute = new Dnna_Plugin_ApiRoute($front, array(), array(
             'api',
         ));
         $router->addRoute('rest', $restRoute);
