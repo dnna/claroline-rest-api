@@ -1,0 +1,1 @@
+A RESTful API providing access to the most important Claroline functions. Supports XML and JSON outputs and uses true REST uris (ie. api/courses/et100.xml for an XML output of the course with code et100).
